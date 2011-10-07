@@ -21,6 +21,7 @@ var StoryView = FormView.extend({
 
     this.model.bind("change:estimate", this.setClassName);
 
+    this.model.bind("render", this.hoverBox());
     // Supply the model with a reference to it's own view object, so it can
     // remove itself from the page when destroy() gets called.
     this.model.view = this;
@@ -272,11 +273,17 @@ var StoryView = FormView.extend({
       $(this.el).append(div);
 
       div = this.make('div');
+      $(div).append(this.label("labels", "Labels"));
+      $(div).append('<br/>');
+      $(div).append(this.textField("labels"));
+      $(this.el).append(div);
+
+      div = this.make('div');
       $(div).append(this.label("description", "Description"));
       $(div).append('<br/>');
       $(div).append(this.textArea("description"));
       $(this.el).append(div);
-
+      this.initTags();
     } else {
       $(this.el).html($('#story_tmpl').tmpl(this.model.toJSON(), {story: this.model, view: this}));
     }
@@ -333,5 +340,18 @@ var StoryView = FormView.extend({
       return 'left';
     }
     return 'right';
+  },
+
+  initTags: function() {
+    var model = this.model;
+    var $input = $(this.el).find("input[name='labels']");
+    $input.tagit({
+      availableTags: model.collection.labels
+    });
+
+    // Manually bind labels for now
+    $input.bind('change', function(){
+      model.set({ labels: $(this).val()});
+    });
   }
 });

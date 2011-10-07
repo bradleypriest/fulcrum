@@ -8,6 +8,10 @@ var ProjectView = Backbone.View.extend({
     this.model.stories.bind('all', this.render);
 
     this.model.stories.fetch();
+
+    // Render the velocity display
+    this.velocityView = new ProjectVelocityView({model: this.model});
+    $('#title_bar').prepend(this.velocityView.render().el);
   },
 
   addStory: function(story, column) {
@@ -43,6 +47,9 @@ var ProjectView = Backbone.View.extend({
 
     this.model.rebuildIterations();
 
+    // Update the velocity display
+    this.velocityView.render();
+
     // Render each iteration
     _.each(this.model.iterations, function(iteration) {
       var column = iteration.get('column');
@@ -52,13 +59,13 @@ var ProjectView = Backbone.View.extend({
     // Render the chilly bin.  This needs to be rendered separately because
     // the stories don't belong to an iteration.
     _.each(this.model.stories.column('#chilly_bin'), function(story) {
-      that.addStory(story)
+      that.addStory(story);
     });
   },
 
   scaleToViewport: function() {
     var storyTableTop = $('table.stories tbody').offset().top;
-    // Extra for the bottom padding and the 
+    // Extra for the bottom padding and the
     var extra = 100;
     var height = $(window).height() - (storyTableTop + extra);
     $('.storycolumn').css('height', height + 'px');

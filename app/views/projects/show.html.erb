@@ -25,7 +25,14 @@
     class="estimate estimate_${story.estimate}">${story.estimate}</span>{{/if}}{{if $item.story.hasDetails()}}<span
     class="icon icon-details" title="${story.description}"></span>{{/if}}</div>
   <div class="story-title">
-    ${story.title}{{if $item.story.owned_by()}}<abbr class="initials" title="${$item.story.owned_by().get("name")}">${$item.story.owned_by().get("initials")}</abbr>{{/if}}</div>
+    {{if story.labels}}<span class="tags">${story.labels}</span>{{/if}}
+    ${story.title}
+    {{if $item.story.owned_by()}}
+      <abbr class="initials" title="${$item.story.owned_by().get("name")}">
+        ${$item.story.owned_by().get("initials")}
+      </abbr>
+    {{/if}}
+  </div>
 
 </script>
 <script id="story_form" type="text/x-jQuery-tmpl">
@@ -87,7 +94,8 @@ $(function() {
 </script>
 
 <% content_for :title_bar do %>
-  <%= render :partial => 'projects/nav', :locals => {:project => @project} %>
+  <%= render :partial => 'projects/nav',
+             :locals => {:project => @project, :show_column_toggles => true} %>
   | <a id="add_story" href="#"><span class="icon-feature"></span>Add story</a>
 <% end %>
 
