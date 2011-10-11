@@ -53,6 +53,12 @@ describe('StoryView', function() {
       expect($(this.view.el)).not.toHaveClass('unestimated');
     });
 
+    it("should have the story state class", function() {
+      expect($(this.view.el)).toHaveClass('unestimated');
+      this.view.model.set({state: 'accepted'});
+      expect($(this.view.el)).toHaveClass('accepted');
+    });
+
   });
 
   describe("id", function() {
@@ -205,6 +211,8 @@ describe('StoryView', function() {
     beforeEach(function() {
       this.story.collection.length = 1;
       this.story.collection.columns = function() {return [];};
+      this.story.collection.project.columnsBefore = sinon.stub();
+      this.story.collection.project.columnsAfter = sinon.stub();
     });
 
     it("sets state to unstarted if dropped on the backlog column", function() {
@@ -217,6 +225,30 @@ describe('StoryView', function() {
       this.view.sortUpdate(ev);
 
       expect(this.story.get('state')).toEqual("unstarted");
+    });
+
+    it("sets state to unstarted if dropped on the in_progress column", function() {
+
+      this.story.set({'state':'unscheduled'});
+
+      var html = $('<td id="in_progress"><div id="1"></div></td>');
+      var ev = {target: html.find('#1')};
+
+      this.view.sortUpdate(ev);
+
+      expect(this.story.get('state')).toEqual("unstarted");
+    });
+
+    it("doesn't change state if not unscheduled and dropped on the in_progress column", function() {
+
+      this.story.set({'state':'finished'});
+
+      var html = $('<td id="in_progress"><div id="1"></div></td>');
+      var ev = {target: html.find('#1')};
+
+      this.view.sortUpdate(ev);
+
+      expect(this.story.get('state')).toEqual("finished");
     });
 
     it("sets state to unscheduled if dropped on the chilly_bin column", function() {

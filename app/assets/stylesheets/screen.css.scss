@@ -223,6 +223,9 @@ div.story {
 div.story:hover {
   background-color: #ddd;
 }
+div.story.accepted {
+  background-color: adjust-lightness($chameleon-1, 40);
+}
 div.story input[type=text],
 div.story textarea {
   width: 99%;
@@ -251,6 +254,9 @@ div.story-title abbr.initials {
 #backlog div.story-title,
 #chilly_bin div.story-title {
   cursor: move;
+}
+#in_progress div.story.accepted div.story-title {
+  cursor: inherit;
 }
 
 span.estimate {
@@ -436,12 +442,10 @@ a.button:hover {
   color: white;
   text-decoration: underline;
 }
-
 .tags{
   color:$sky-blue-3;
   font-size:90%;
 }
-
 // Popover Overrides
 // Custom Style Overrides
 .popover{

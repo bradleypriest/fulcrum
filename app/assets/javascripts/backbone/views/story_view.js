@@ -20,6 +20,7 @@ var StoryView = FormView.extend({
     this.model.bind("change:column", this.moveColumn);
 
     this.model.bind("change:estimate", this.setClassName);
+    this.model.bind("change:state", this.setClassName);
 
     this.model.bind("render", this.hoverBox());
     // Supply the model with a reference to it's own view object, so it can
@@ -60,7 +61,7 @@ var StoryView = FormView.extend({
 
     // Set the story state if drop column is chilly_bin or backlog
     var column = target.parent().attr('id');
-    if (column == 'backlog') {
+    if (column === 'backlog' || (column === 'in_progress' && this.model.get('state') === 'unscheduled')) {
       this.model.set({state: 'unstarted'});
     } else if (column == 'chilly_bin') {
       this.model.set({state: 'unscheduled'});
@@ -71,14 +72,8 @@ var StoryView = FormView.extend({
     // are the only columns that can receive drops from other columns.
     if (typeof previous_story_id == 'undefined' && typeof next_story_id == 'undefined') {
 
-      var beforeSearchColumns = [], afterSearchColumns = [];
-
-      if (column == 'chilly_bin') {
-        beforeSearchColumns = ['#done', '#current', '#backlog'];
-      } else if (column == 'backlog') {
-        beforeSearchColumns = ['#done', '#current'];
-        afterSearchColumns = ['#chilly_bin'];
-      }
+      var beforeSearchColumns = this.model.collection.project.columnsBefore('#' + column);
+      var afterSearchColumns  = this.model.collection.project.columnsAfter('#' + column);
 
       var previousStory = _.last(this.model.collection.columns(beforeSearchColumns));
       var nextStory = _.first(this.model.collection.columns(afterSearchColumns));
@@ -292,7 +287,9 @@ var StoryView = FormView.extend({
   },
 
   setClassName: function() {
-    var className = 'story ' + this.model.get('story_type');
+    var className = [
+      'story', this.model.get('story_type'), this.model.get('state')
+    ].join(' ');
     if (this.model.estimable() && !this.model.estimated()) {
       className += ' unestimated';
     }
@@ -313,7 +310,7 @@ var StoryView = FormView.extend({
 
   hoverBox: function(){
     var view  = this;
-    $(this.el).find('.story_type').popover({
+    $(this.el).find('.popover-activate').popover({
       title: function(){
         return view.model.get("title");
       },
