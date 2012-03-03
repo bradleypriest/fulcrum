@@ -17,12 +17,13 @@
     </form>
   </div>
   {{/if}}
-  <div class="story-icons">{{if $item.view.saveInProgress}}<img
-    src="/images/throbber.gif" alt="Saving ...">{{else}}<img
-    src="/images/expand.png" class="expand" alt="Expand">{{/if}}<span class="popover-activate"><img
-    src="/images/${story.story_type}.png" class="story_type" alt="${story.story_type}">{{if story.estimated}}<span
-      class="estimate estimate_${story.estimate}">${story.estimate}</span>{{/if}}{{if $item.story.hasDetails()}}<img
-    src="/images/details.png"/>{{/if}}</span></div>
+  <div class="story-icons">{{if $item.view.saveInProgress}}<a
+    class="icon icon-throbber">Saving...</a>{{else}}<a
+    class="icon icon-expand expand">Expand</a>{{/if}}<span class="popover-activate"><span
+    class="icon icon-${story.story_type} story_type"
+    title="${story.story_type}: ${story.id}">${story.story_type}</span>{{if story.estimated}}<span
+    class="estimate estimate_${story.estimate}">${story.estimate}</span>{{/if}}{{if $item.story.hasDetails()}}<span
+    class="icon icon-details" title="${story.description}"></span>{{/if}}</span></div>
   <div class="story-title">
     {{if story.labels}}<span class="tags">${story.labels}</span>{{/if}}
     ${story.title}
@@ -44,7 +45,7 @@
 <script id="story_hover" type="text/x-jQuery-tmpl">
   <div class="small">
     <span class="icons">
-      <img src="/images/${story.story_type}.png">
+      <span class="icon icon-${story.story_type}"></span>
       <span class="text">${story.story_type}</span>
       {{if story.estimated}}
         <span class="estimate estimate_${story.estimate}">${story.estimate}</span>
@@ -95,7 +96,7 @@ $(function() {
 <% content_for :title_bar do %>
   <%= render :partial => 'projects/nav',
              :locals => {:project => @project, :show_column_toggles => true} %>
-  | <a id="add_story" href="#">Add story</a>
+  | <a id="add_story" href="#"><span class="icon-feature"></span>Add story</a>
 <% end %>
 
 <table class="stories" width="100%">
