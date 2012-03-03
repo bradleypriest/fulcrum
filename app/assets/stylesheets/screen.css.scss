@@ -1,6 +1,9 @@
 @import 'compass/css3';
 @import 'icons';
 @import 'scaffold';
+@import 'jquery_gritter';
+@import 'jquery.tagit';
+/*@import 'twipsy';*/
 
 $darkgrey:   #6a7176;           // Header color
 $orange:     rgb(250,182,155);  // Estimate gauge color
